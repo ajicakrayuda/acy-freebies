@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ACY Freebies - Source code gratis</title>
+  <meta name="description" content="Kumpulan source code gratis dari ACY Partner Indonesia: landing page, dashboard, dan app kecil. HTML, CSS, dan JavaScript murni.">
+  <link rel="icon" href="assets/logo.png">
+  <style>
+    :root {
+      --bg: #f7f9fb;
+      --surface: #ffffff;
+      --ink: #14202b;
+      --muted: #5b6875;
+      --line: #e3e8ee;
+      --accent: #17bdf2;
+      --accent-ink: #0a6f93;
+      --chip: #eef3f7;
+      --shadow: 0 1px 2px rgba(20, 32, 43, .06), 0 8px 24px rgba(20, 32, 43, .06);
+      --radius: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0e151c;
+        --surface: #151e27;
+        --ink: #eaf1f7;
+        --muted: #9aa8b5;
+        --line: #24303b;
+        --accent: #17bdf2;
+        --accent-ink: #6fd6f7;
+        --chip: #1c2732;
+        --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    a { color: var(--accent-ink); }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+    header.site { border-bottom: 1px solid var(--line); background: var(--surface); }
+    header.site .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 68px; }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); font-weight: 700; }
+    .brand img { height: 48px; width: auto; border-radius: 8px; background: #fff; border: 1px solid var(--line); }
+    .gh { font-size: 14px; font-weight: 600; text-decoration: none; padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); }
+    .gh:hover { border-color: var(--accent); }
+
+    .hero { padding: 56px 0 28px; }
+    .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-ink); margin: 0 0 12px; }
+    h1 { font-size: clamp(32px, 6vw, 52px); line-height: 1.08; letter-spacing: -.02em; margin: 0 0 14px; max-width: 16ch; }
+    .lead { color: var(--muted); font-size: 18px; max-width: 58ch; margin: 0; }
+
+    .tools { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; padding: 20px 0; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; }
+    .filters button {
+      font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+      padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line);
+      background: var(--surface); color: var(--muted);
+    }
+    .filters button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+    .search {
+      font: inherit; font-size: 15px; width: 100%; max-width: 280px;
+      padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line);
+      background: var(--surface); color: var(--ink);
+    }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 20px; padding: 4px 0 64px; list-style: none; margin: 0; }
+    .card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 22px; display: flex; flex-direction: column; gap: 12px;
+      transition: transform .15s ease, border-color .15s ease;
+    }
+    .card:hover { transform: translateY(-2px); border-color: var(--accent); }
+    @media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
+    .meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--muted); }
+    .badge { font-weight: 700; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent-ink); background: var(--chip); padding: 4px 10px; border-radius: 999px; }
+    .card h2 { font-size: 20px; line-height: 1.25; margin: 0; }
+    .card p { margin: 0; color: var(--muted); font-size: 15px; flex: 1; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; color: var(--muted); }
+    .tags span { background: var(--chip); border-radius: 6px; padding: 2px 8px; }
+    .actions { display: flex; gap: 10px; margin-top: 4px; }
+    .btn { flex: 1; text-align: center; text-decoration: none; font-weight: 700; font-size: 14px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); color: var(--ink); }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: #06222e; }
+    .btn:hover { filter: brightness(1.05); }
+
+    .state { text-align: center; color: var(--muted); padding: 48px 20px 72px; }
+    footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; padding: 24px 0 40px; }
+    footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; }
+  </style>
+</head>
+<body>
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="./">
+        <img src="assets/logo-full.png" alt="ACY - Partner in IT &amp; Innovation" width="106" height="48">
+        <span>Freebies</span>
+      </a>
+      <a class="gh" href="https://github.com/ajicakrayuda/acy-freebies">Lihat di GitHub</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <p class="eyebrow">ACY Partner Indonesia</p>
+      <h1>Source code gratis, siap pakai.</h1>
+      <p class="lead">Landing page, dashboard, dan app kecil dalam HTML, CSS, dan JavaScript murni. Buka demonya, ambil kodenya, pakai untuk proyek apa pun.</p>
+    </section>
+
+    <div class="tools">
+      <div class="filters" role="group" aria-label="Filter kategori">
+        <button type="button" data-cat="all" aria-pressed="true">Semua</button>
+        <button type="button" data-cat="landing-page" aria-pressed="false">Landing page</button>
+        <button type="button" data-cat="dashboard" aria-pressed="false">Dashboard</button>
+        <button type="button" data-cat="app" aria-pressed="false">App kecil</button>
+      </div>
+      <input class="search" type="search" id="q" placeholder="Cari project..." aria-label="Cari project">
+    </div>
+
+    <ul class="grid" id="grid" aria-live="polite"></ul>
+    <p class="state" id="state">Memuat daftar project...</p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>&copy; ACY Partner Indonesia. Lisensi MIT.</span>
+      <span>Partner in IT &amp; Innovation</span>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var REPO = 'https://github.com/ajicakrayuda/acy-freebies/tree/main/projects/';
+      var LABEL = { 'landing-page': 'Landing page', 'dashboard': 'Dashboard', 'app': 'App kecil' };
+      var grid = document.getElementById('grid');
+      var state = document.getElementById('state');
+      var q = document.getElementById('q');
+      var buttons = document.querySelectorAll('.filters button');
+      var projects = [];
+      var cat = 'all';
+
+      function el(tag, cls, text) {
+        var n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (text != null) n.textContent = text;
+        return n;
+      }
+
+      function card(p) {
+        var li = el('li', 'card');
+        var meta = el('div', 'meta');
+        meta.appendChild(el('span', 'badge', LABEL[p.category] || p.category));
+        meta.appendChild(el('span', null, p.date || ''));
+        li.appendChild(meta);
+        li.appendChild(el('h2', null, p.title));
+        li.appendChild(el('p', null, p.description));
+        if (p.tags && p.tags.length) {
+          var tags = el('div', 'tags');
+          p.tags.forEach(function (t) { tags.appendChild(el('span', null, t)); });
+          li.appendChild(tags);
+        }
+        var actions = el('div', 'actions');
+        var slug = encodeURIComponent(p.slug);
+        var demo = el('a', 'btn primary', 'Lihat demo');
+        demo.href = 'projects/' + slug + '/';
+        var code = el('a', 'btn', 'Ambil kode');
+        code.href = REPO + slug;
+        actions.appendChild(demo);
+        actions.appendChild(code);
+        li.appendChild(actions);
+        return li;
+      }
+
+      function render() {
+        var term = q.value.trim().toLowerCase();
+        var list = projects.filter(function (p) {
+          var hay = [p.title, p.description, (p.tags || []).join(' ')].join(' ').toLowerCase();
+          return (cat === 'all' || p.category === cat) && (!term || hay.indexOf(term) !== -1);
+        });
+        grid.textContent = '';
+        list.forEach(function (p) { grid.appendChild(card(p)); });
+        if (!projects.length) state.textContent = 'Project pertama segera hadir.';
+        else if (!list.length) state.textContent = 'Tidak ada project yang cocok.';
+        else state.textContent = '';
+        state.hidden = list.length > 0;
+      }
+
+      buttons.forEach(function (b) {
+        b.addEventListener('click', function () {
+          cat = b.dataset.cat;
+          buttons.forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+          render();
+        });
+      });
+      q.addEventListener('input', render);
+
+      fetch('projects.json', { cache: 'no-cache' })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (data) {
+          projects = (Array.isArray(data) ? data : []).slice().sort(function (a, b) {
+            return String(b.date || '').localeCompare(String(a.date || ''));
+          });
+          render();
+        })
+        .catch(function () { state.textContent = 'Gagal memuat daftar project. Coba muat ulang halaman.'; });
+    })();
+  </script>
+</body>
+</html>
