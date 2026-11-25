@@ -1,364 +1,223 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nimbus - Kelola Tugas Tim Tanpa Ribet</title>
-<meta name="description" content="Nimbus, aplikasi buat mengatur tugas tim. Produk fiktif, cuma contoh landing page.">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
-<style>
-:root{
-  --bg:#f7f8fc;--surface:#fff;--text:#14172b;--muted:#4a4f68;--border:#dcdff0;
-  --primary:#4338ca;--primary-h:#3730a3;--on-primary:#fff;--accent:#0e7490;--soft:#eceefd;
-  --ok:#0f6b3a;--err:#b42318;--shadow:0 10px 30px rgba(35,40,90,.12);
-  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2.5rem;--s5:5rem;--r:14px;--max:68rem;
-}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0d1020;--surface:#171b33;--text:#eef0ff;--muted:#aab0cf;--border:#2b3156;
-  --primary:#9aa5ff;--primary-h:#b4bcff;--on-primary:#0d1020;--accent:#5fd4ee;--soft:#1e2342;
-  --ok:#6fe0a1;--err:#ff9b92;--shadow:0 10px 30px rgba(0,0,0,.45)}}
-:root[data-theme="dark"]{
-  --bg:#0d1020;--surface:#171b33;--text:#eef0ff;--muted:#aab0cf;--border:#2b3156;
-  --primary:#9aa5ff;--primary-h:#b4bcff;--on-primary:#0d1020;--accent:#5fd4ee;--soft:#1e2342;
-  --ok:#6fe0a1;--err:#ff9b92;--shadow:0 10px 30px rgba(0,0,0,.45)}
-*,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:5rem}
-body{margin:0;background:var(--bg);color:var(--text);font:1rem/1.65 var(--font);-webkit-font-smoothing:antialiased}
-h1,h2,h3{line-height:1.2;margin:0 0 var(--s1);letter-spacing:-.02em}
-h1{font-size:clamp(2.1rem,6vw,3.6rem)}
-h2{font-size:clamp(1.6rem,4vw,2.3rem)}
-h3{font-size:1.15rem}
-p{margin:0 0 var(--s2)}
-a{color:var(--primary)}
-:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
-.wrap{width:min(100% - 2rem,var(--max));margin-inline:auto}
-section{padding-block:var(--s5)}
-.lead{color:var(--muted);font-size:1.125rem;max-width:38rem}
-.center{text-align:center}.center .lead{margin-inline:auto}
-.eyebrow{color:var(--accent);font-weight:700;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase}
-.skip{position:absolute;left:1rem;top:-4rem;background:var(--primary);color:var(--on-primary);padding:.6rem 1rem;border-radius:8px;z-index:100;transition:top .2s}
-.skip:focus{top:1rem}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:44px;padding:.65rem 1.4rem;border-radius:999px;border:2px solid var(--primary);background:var(--primary);color:var(--on-primary);font:inherit;font-weight:600;text-decoration:none;cursor:pointer;transition:background .2s,transform .2s}
-.btn:hover{background:var(--primary-h);border-color:var(--primary-h)}
-.btn:active{transform:scale(.98)}
-.btn.ghost{background:transparent;color:var(--text);border-color:var(--border)}
-.btn.ghost:hover{border-color:var(--primary);background:var(--soft)}
-.icon-btn{min-width:44px;min-height:44px;display:inline-grid;place-items:center;background:transparent;color:var(--text);border:2px solid var(--border);border-radius:12px;cursor:pointer}
-.icon-btn:hover{background:var(--soft)}
-.icon-btn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
-/* header */
-header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
-.bar{display:flex;align-items:center;gap:var(--s2);min-height:4rem}
-.brand{display:flex;align-items:center;gap:.55rem;font-weight:800;font-size:1.25rem;color:var(--text);text-decoration:none;margin-right:auto}
-.brand svg{width:30px;height:30px}
-nav ul{list-style:none;margin:0;padding:0;display:flex;gap:.25rem}
-nav a:not(.btn){display:block;padding:.5rem .8rem;border-radius:8px;color:var(--text);text-decoration:none;font-weight:500}
-nav a:not(.btn):hover{background:var(--soft)}
-#menu-btn{display:inline-grid}
-#site-nav{display:none;position:absolute;left:0;right:0;top:100%;background:var(--bg);border-bottom:1px solid var(--border);padding:var(--s2)}
-#site-nav.open{display:block}
-#site-nav ul{flex-direction:column}
-.cta-nav{display:none}
-@media(min-width:800px){
-  #menu-btn{display:none}
-  #site-nav{display:block;position:static;background:none;border:0;padding:0}
-  #site-nav ul{flex-direction:row}
-  .cta-nav{display:inline-flex}
-}
-/* hero */
-.hero{padding-top:var(--s4)}
-.hero .wrap{display:grid;gap:var(--s4);align-items:center}
-.hero h1 span{color:var(--primary)}
-.actions{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s3)}
-.note{color:var(--muted);font-size:.9rem;margin-top:var(--s2)}
-@media(min-width:900px){.hero .wrap{grid-template-columns:1.05fr 1fr}}
-.mock{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
-.mock-top{display:flex;gap:6px;padding:.7rem 1rem;border-bottom:1px solid var(--border)}
-.mock-top i{width:10px;height:10px;border-radius:50%;background:var(--border)}
-.mock-body{display:grid;grid-template-columns:5.5rem 1fr;min-height:15rem}
-.mock-side{border-right:1px solid var(--border);padding:var(--s2) .7rem;display:grid;gap:.5rem;align-content:start}
-.mock-side b{display:block;height:.6rem;border-radius:4px;background:var(--border)}
-.mock-side b:first-child{background:var(--primary)}
-.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;padding:var(--s2)}
-.col h4{margin:0 0 .5rem;font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-.card{background:var(--soft);border-radius:8px;padding:.5rem;margin-bottom:.5rem;font-size:.72rem;line-height:1.35}
-.card em{display:block;height:.35rem;width:60%;border-radius:4px;background:var(--accent);margin-top:.4rem;font-style:normal}
-.card.done em{background:var(--ok);width:100%}
-/* features */
-.grid{display:grid;gap:var(--s3);margin-top:var(--s4)}
-@media(min-width:640px){.grid{grid-template-columns:repeat(2,1fr)}}
-@media(min-width:960px){.grid.three{grid-template-columns:repeat(3,1fr)}}
-.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:var(--s3)}
-.panel p{color:var(--muted);margin:0}
-.ico{width:48px;height:48px;border-radius:12px;background:var(--soft);color:var(--primary);display:grid;place-items:center;margin-bottom:var(--s2)}
-.ico svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-/* steps */
-.alt{background:var(--soft)}
-.steps{list-style:none;counter-reset:s;margin:var(--s4) 0 0;padding:0;display:grid;gap:var(--s3)}
-@media(min-width:800px){.steps{grid-template-columns:repeat(3,1fr)}}
-.steps li{counter-increment:s;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:var(--s3)}
-.steps li::before{content:counter(s);display:grid;place-items:center;width:2.4rem;height:2.4rem;border-radius:50%;background:var(--primary);color:var(--on-primary);font-weight:700;margin-bottom:var(--s2)}
-.steps p{color:var(--muted);margin:0}
-/* pricing */
-.toggle{display:inline-flex;align-items:center;gap:.8rem;margin-top:var(--s3);font-weight:600}
-.sw{position:relative;width:56px;height:32px;border-radius:999px;border:2px solid var(--primary);background:var(--soft);cursor:pointer;padding:0}
-.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--primary);transition:transform .2s}
-.sw[aria-checked="true"]::after{transform:translateX(24px)}
-.badge{background:var(--primary);color:var(--on-primary);font-size:.75rem;padding:.1rem .6rem;border-radius:999px}
-.plan{display:flex;flex-direction:column}
-.plan.pop{border:2px solid var(--primary);box-shadow:var(--shadow)}
-.price{font-size:2.4rem;font-weight:800;margin:var(--s1) 0}
-.price small{display:block;font-size:.95rem;font-weight:500;color:var(--muted)}
-.plan ul{list-style:none;padding:0;margin:var(--s2) 0 var(--s3);display:grid;gap:.5rem;align-content:start;flex:1}
-.plan li::before{content:"\2713";color:var(--ok);font-weight:800;margin-right:.5rem}
-/* faq */
-.faq{max-width:46rem;margin:var(--s4) auto 0;display:grid;gap:.75rem}
-.faq h3{margin:0;font-size:1rem}
-.q{display:flex;justify-content:space-between;align-items:center;gap:var(--s2);width:100%;min-height:52px;padding:.9rem 1.2rem;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:var(--r);font:inherit;font-weight:600;text-align:left;cursor:pointer}
-.q:hover{border-color:var(--primary)}
-.q::after{content:"+";font-size:1.4rem;line-height:1;color:var(--primary);transition:transform .2s}
-.q[aria-expanded="true"]::after{transform:rotate(45deg)}
-.a{padding:.75rem 1.2rem 0;color:var(--muted)}
-/* signup */
-.signup{background:var(--surface);border:1px solid var(--border);border-radius:calc(var(--r)*1.5);padding:var(--s4) var(--s3);box-shadow:var(--shadow)}
-form{max-width:30rem;margin:var(--s3) auto 0;text-align:left}
-label{display:block;font-weight:600;margin-bottom:.4rem}
-.req{color:var(--err);font-size:.75rem;font-weight:500}
-.row{display:flex;flex-direction:column;gap:var(--s2)}
-@media(min-width:560px){.row{flex-direction:row;align-items:flex-start}.row .f{flex:1}}
-input[type=email]{width:100%;min-height:48px;padding:.6rem 1rem;border:2px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);font:inherit}
-input[aria-invalid="true"]{border-color:var(--err)}
-.msg{margin:.5rem 0 0;font-weight:500;min-height:1.5rem}
-.msg.err{color:var(--err)}.msg.ok{color:var(--ok)}
-.row .btn{margin-top:0}
-@media(min-width:560px){.row .btn{margin-top:0}}
-/* footer */
-footer{border-top:1px solid var(--border);padding-block:var(--s4);color:var(--muted)}
-footer .wrap{display:flex;flex-wrap:wrap;gap:var(--s2);justify-content:space-between}
-footer ul{list-style:none;margin:0;padding:0;display:flex;gap:var(--s2);flex-wrap:wrap}
-footer p{margin:0}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
-</style>
-</head>
-<body>
-<a class="skip" href="#main">Langsung ke isi halaman</a>
-<header>
-  <div class="wrap bar">
-    <a class="brand" href="#top" aria-label="Nimbus, beranda">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--primary)"/><path d="M9 20.5a4 4 0 0 1 .8-7.9 5.5 5.5 0 0 1 10.6 1.2A3.5 3.5 0 0 1 21 20.5z" fill="var(--on-primary)"/></svg>
-      Nimbus
-    </a>
-    <nav aria-label="Menu utama">
-      <button id="menu-btn" class="icon-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Buka menu">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
-      <div id="site-nav">
-        <ul>
-          <li><a href="#fitur">Fitur</a></li>
-          <li><a href="#cara-kerja">Cara kerja</a></li>
-          <li><a href="#harga">Harga</a></li>
-          <li><a href="#faq">FAQ</a></li>
-        </ul>
-      </div>
-    </nav>
-    <button id="theme-btn" class="icon-btn" type="button" aria-pressed="false" aria-label="Ganti ke tema gelap">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
-    </button>
-    <a class="btn cta-nav" href="#daftar">Coba gratis</a>
-  </div>
-</header>
-<main id="main">
-  <section class="hero" id="top" aria-labelledby="h-hero">
-    <div class="wrap">
-      <div>
-        <p class="eyebrow">Atur tugas tim jadi gampang</p>
-        <h1 id="h-hero">Semua tugas tim, <span>rapi di satu tempat</span>.</h1>
-        <p class="lead">Nimbus bantu tim kamu merencanakan, membagi, dan menyelesaikan pekerjaan, tanpa rapat panjang cuma buat tanya progres.</p>
-        <div class="actions">
-          <a class="btn" href="#daftar">Mulai gratis</a>
-          <a class="btn ghost" href="#cara-kerja">Lihat cara kerjanya</a>
-        </div>
-        <p class="note">Nggak perlu kartu kredit, bisa berhenti kapan saja. (Produk fiktif, cuma contoh.)</p>
-      </div>
-      <div class="mock" role="img" aria-label="Contoh tampilan papan tugas Nimbus dengan tiga kolom: Rencana, Dikerjakan, Selesai">
-        <div class="mock-top"><i></i><i></i><i></i></div>
-        <div class="mock-body">
-          <div class="mock-side"><b></b><b></b><b></b><b></b></div>
-          <div class="cols">
-            <div class="col"><h4>Rencana</h4><div class="card">Susun brief kampanye<em></em></div><div class="card">Riset pengguna<em></em></div></div>
-            <div class="col"><h4>Dikerjakan</h4><div class="card">Desain halaman harga<em></em></div></div>
-            <div class="col"><h4>Selesai</h4><div class="card done">Rilis versi 1.2<em></em></div><div class="card done">Perbaiki login<em></em></div></div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nimbus - Kelola Tugas Tim Tanpa Ribet</title>
+    <meta
+      name="description"
+      content="Nimbus, aplikasi buat mengatur tugas tim. Produk fiktif, cuma contoh landing page."
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Langsung ke isi halaman</a>
+    <header>
+      <div class="wrap bar">
+        <a class="brand" href="#top" aria-label="Nimbus, beranda">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="9" fill="var(--primary)" />
+            <path
+              d="M9 20.5a4 4 0 0 1 .8-7.9 5.5 5.5 0 0 1 10.6 1.2A3.5 3.5 0 0 1 21 20.5z"
+              fill="var(--on-primary)"
+            />
+          </svg>
+          Nimbus
+        </a>
+        <nav aria-label="Menu utama">
+          <button
+            id="menu-btn"
+            class="icon-btn"
+            type="button"
+            aria-expanded="false"
+            aria-controls="site-nav"
+            aria-label="Buka menu"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+          </button>
+          <div id="site-nav">
+            <ul>
+              <li><a href="#fitur">Fitur</a></li>
+              <li><a href="#cara-kerja">Cara kerja</a></li>
+              <li><a href="#harga">Harga</a></li>
+              <li><a href="#faq">FAQ</a></li>
+            </ul>
           </div>
-        </div>
+        </nav>
+        <button
+          id="theme-btn"
+          class="icon-btn"
+          type="button"
+          aria-pressed="false"
+          aria-label="Ganti ke tema gelap"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" />
+          </svg>
+        </button>
+        <a class="btn cta-nav" href="#daftar">Coba gratis</a>
       </div>
-    </div>
-  </section>
-
-  <section id="fitur" aria-labelledby="h-fitur">
-    <div class="wrap">
-      <div class="center">
-        <p class="eyebrow">Fitur</p>
-        <h2 id="h-fitur">Semua yang tim kamu butuhkan</h2>
-        <p class="lead">Simpel dan nggak bikin ribet, dari tugas harian sampai proyek besar.</p>
-      </div>
-      <div class="grid three" id="fitur-grid"></div>
-    </div>
-  </section>
-
-  <section id="cara-kerja" class="alt" aria-labelledby="h-cara">
-    <div class="wrap">
-      <div class="center">
-        <p class="eyebrow">Cara kerja</p>
-        <h2 id="h-cara">Mulai cuma tiga langkah</h2>
-      </div>
-      <ol class="steps">
-        <li><h3>Buat ruang kerja</h3><p>Daftar pakai email, kasih nama tim, lalu undang teman kerja lewat link.</p></li>
-        <li><h3>Tambah tugas</h3><p>Catat tugasnya, tentukan batas waktu dan siapa yang mengerjakan. Cuma butuh beberapa detik.</p></li>
-        <li><h3>Pantau progresnya</h3><p>Cek papan tugas dan ringkasan mingguan, biar semua tahu sudah sampai mana.</p></li>
-      </ol>
-    </div>
-  </section>
-
-  <section id="harga" aria-labelledby="h-harga">
-    <div class="wrap center">
-      <p class="eyebrow">Harga</p>
-      <h2 id="h-harga">Pilih paket yang pas buat tim kamu</h2>
-      <div class="toggle">
-        <span id="lbl-m">Bulanan</span>
-        <button class="sw" id="bill" type="button" role="switch" aria-checked="false" aria-label="Bayar tahunan"></button>
-        <span id="lbl-y">Tahunan <span class="badge">Hemat 20%</span></span>
-      </div>
-      <div class="grid three" id="plans" style="text-align:left"></div>
-      <p class="note">Harganya fiktif, dalam Rupiah per orang per bulan.</p>
-    </div>
-  </section>
-
-  <section id="faq" class="alt" aria-labelledby="h-faq">
-    <div class="wrap">
-      <div class="center"><p class="eyebrow">FAQ</p><h2 id="h-faq">Yang sering ditanyakan</h2></div>
-      <div class="faq" id="faq-list"></div>
-    </div>
-  </section>
-
-  <section id="daftar" aria-labelledby="h-daftar">
-    <div class="wrap">
-      <div class="signup center">
-        <h2 id="h-daftar">Siap bikin kerjaan tim lebih rapi?</h2>
-        <p class="lead">Isi email kamu, nanti kami kabari begitu Nimbus bisa dicoba.</p>
-        <form id="form" novalidate>
-          <label for="email">Email <sup class="req">* wajib diisi</sup></label>
-          <div class="row">
-            <div class="f">
-              <input id="email" name="email" type="email" autocomplete="email" placeholder="nama@perusahaan.id" required aria-required="true" aria-describedby="email-msg">
+    </header>
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="h-hero">
+        <div class="wrap">
+          <div>
+            <p class="eyebrow">Atur tugas tim jadi gampang</p>
+            <h1 id="h-hero">Semua tugas tim, <span>rapi di satu tempat</span>.</h1>
+            <p class="lead">
+              Nimbus bantu tim kamu merencanakan, membagi, dan menyelesaikan pekerjaan, tanpa rapat
+              panjang cuma buat tanya progres.
+            </p>
+            <div class="actions">
+              <a class="btn" href="#daftar">Mulai gratis</a>
+              <a class="btn ghost" href="#cara-kerja">Lihat cara kerjanya</a>
             </div>
-            <button class="btn" type="submit">Daftar</button>
+            <p class="note">
+              Nggak perlu kartu kredit, bisa berhenti kapan saja. (Produk fiktif, cuma contoh.)
+            </p>
           </div>
-          <p id="email-msg" class="msg" role="status" aria-live="polite"></p>
-        </form>
+          <div
+            class="mock"
+            role="img"
+            aria-label="Contoh tampilan papan tugas Nimbus dengan tiga kolom: Rencana, Dikerjakan, Selesai"
+          >
+            <div class="mock-top"><i></i><i></i><i></i></div>
+            <div class="mock-body">
+              <div class="mock-side"><b></b><b></b><b></b><b></b></div>
+              <div class="cols">
+                <div class="col">
+                  <h4>Rencana</h4>
+                  <div class="card">Susun brief kampanye<em></em></div>
+                  <div class="card">Riset pengguna<em></em></div>
+                </div>
+                <div class="col">
+                  <h4>Dikerjakan</h4>
+                  <div class="card">Desain halaman harga<em></em></div>
+                </div>
+                <div class="col">
+                  <h4>Selesai</h4>
+                  <div class="card done">Rilis versi 1.2<em></em></div>
+                  <div class="card done">Perbaiki login<em></em></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="fitur" aria-labelledby="h-fitur">
+        <div class="wrap">
+          <div class="center">
+            <p class="eyebrow">Fitur</p>
+            <h2 id="h-fitur">Semua yang tim kamu butuhkan</h2>
+            <p class="lead">Simpel dan nggak bikin ribet, dari tugas harian sampai proyek besar.</p>
+          </div>
+          <div class="grid three" id="fitur-grid"></div>
+        </div>
+      </section>
+
+      <section id="cara-kerja" class="alt" aria-labelledby="h-cara">
+        <div class="wrap">
+          <div class="center">
+            <p class="eyebrow">Cara kerja</p>
+            <h2 id="h-cara">Mulai cuma tiga langkah</h2>
+          </div>
+          <ol class="steps">
+            <li>
+              <h3>Buat ruang kerja</h3>
+              <p>Daftar pakai email, kasih nama tim, lalu undang teman kerja lewat link.</p>
+            </li>
+            <li>
+              <h3>Tambah tugas</h3>
+              <p>
+                Catat tugasnya, tentukan batas waktu dan siapa yang mengerjakan. Cuma butuh beberapa
+                detik.
+              </p>
+            </li>
+            <li>
+              <h3>Pantau progresnya</h3>
+              <p>Cek papan tugas dan ringkasan mingguan, biar semua tahu sudah sampai mana.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="harga" aria-labelledby="h-harga">
+        <div class="wrap center">
+          <p class="eyebrow">Harga</p>
+          <h2 id="h-harga">Pilih paket yang pas buat tim kamu</h2>
+          <div class="toggle">
+            <span id="lbl-m">Bulanan</span>
+            <button
+              class="sw"
+              id="bill"
+              type="button"
+              role="switch"
+              aria-checked="false"
+              aria-label="Bayar tahunan"
+            ></button>
+            <span id="lbl-y">Tahunan <span class="badge">Hemat 20%</span></span>
+          </div>
+          <div class="grid three" id="plans"></div>
+          <p class="note">Harganya fiktif, dalam Rupiah per orang per bulan.</p>
+        </div>
+      </section>
+
+      <section id="faq" class="alt" aria-labelledby="h-faq">
+        <div class="wrap">
+          <div class="center">
+            <p class="eyebrow">FAQ</p>
+            <h2 id="h-faq">Yang sering ditanyakan</h2>
+          </div>
+          <div class="faq" id="faq-list"></div>
+        </div>
+      </section>
+
+      <section id="daftar" aria-labelledby="h-daftar">
+        <div class="wrap">
+          <div class="signup center">
+            <h2 id="h-daftar">Siap bikin kerjaan tim lebih rapi?</h2>
+            <p class="lead">Isi email kamu, nanti kami kabari begitu Nimbus bisa dicoba.</p>
+            <form id="form" novalidate>
+              <label for="email">Email <sup class="req">* wajib diisi</sup></label>
+              <div class="row">
+                <div class="f">
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    placeholder="nama@perusahaan.id"
+                    required
+                    aria-required="true"
+                    aria-describedby="email-msg"
+                  />
+                </div>
+                <button class="btn" type="submit">Daftar</button>
+              </div>
+              <p id="email-msg" class="msg" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="wrap">
+        <p>&copy; <span id="year">2026</span> Nimbus. Produk fiktif, cuma contoh.</p>
+        <nav aria-label="Menu bawah">
+          <ul>
+            <li><a href="#fitur">Fitur</a></li>
+            <li><a href="#harga">Harga</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#top">Kembali ke atas</a></li>
+          </ul>
+        </nav>
       </div>
-    </div>
-  </section>
-</main>
-<footer>
-  <div class="wrap">
-    <p>&copy; <span id="year">2026</span> Nimbus. Produk fiktif, cuma contoh.</p>
-    <nav aria-label="Menu bawah"><ul>
-      <li><a href="#fitur">Fitur</a></li><li><a href="#harga">Harga</a></li><li><a href="#faq">FAQ</a></li><li><a href="#top">Kembali ke atas</a></li>
-    </ul></nav>
-  </div>
-</footer>
-<script>
-(function(){
-  var $=function(s){return document.querySelector(s)};
-  var root=document.documentElement;
-  var P='<svg viewBox="0 0 24 24" aria-hidden="true">';
-  var features=[
-    ['Papan Kanban','Geser tugas dari satu kolom ke kolom lain, alur kerja langsung kelihatan.','<path d="M4 5h4v14H4zM10 5h4v9h-4zM16 5h4v6h-4z"/>'],
-    ['Batas waktu &amp; pengingat','Pengingat otomatis, jadi nggak ada tugas yang kelewat.','<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>'],
-    ['Kerja bareng di satu tempat','Komentar, mention, dan lampiran ada langsung di dalam tugasnya.','<path d="M4 5h16v11H9l-5 4z"/>'],
-    ['Template proyek','Mulai lebih cepat pakai template untuk sprint, kampanye, dan onboarding.','<path d="M5 3h10l4 4v14H5zM14 3v5h5"/>'],
-    ['Laporan mingguan','Ringkasan progres tim dikirim otomatis tiap Senin pagi.','<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'],
-    ['Aman &amp; privat','Hak akses diatur per proyek, jadi informasi cuma dilihat orang yang berhak.','<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>']
-  ];
-  $('#fitur-grid').innerHTML=features.map(function(f){
-    return '<article class="panel"><div class="ico">'+P+f[2]+'</svg></div><h3>'+f[0]+'</h3><p>'+f[1]+'</p></article>';
-  }).join('');
-
-  var plans=[
-    {n:'Gratis',m:0,y:0,d:'Buat tim kecil yang baru mulai.',f:['Sampai 5 orang','3 proyek aktif','Papan Kanban dasar'],c:'Mulai gratis'},
-    {n:'Tim',m:49000,y:39000,d:'Buat tim yang lagi berkembang.',f:['Jumlah orang bebas','Jumlah proyek bebas','Pengingat &amp; laporan mingguan','Template proyek'],c:'Pilih Tim',pop:1},
-    {n:'Bisnis',m:99000,y:79000,d:'Buat perusahaan yang butuh lebih.',f:['Semua fitur paket Tim','Pengaturan hak akses lebih detail','Riwayat aktivitas 1 tahun','Bantuan diprioritaskan'],c:'Pilih Bisnis'}
-  ];
-  var fmt=function(n){return n===0?'Rp0':'Rp'+n.toLocaleString('id-ID')};
-  var yearly=false;
-  function renderPlans(){
-    $('#plans').innerHTML=plans.map(function(p){
-      return '<article class="panel plan'+(p.pop?' pop':'')+'"><h3>'+p.n+(p.pop?' <span class="badge">Populer</span>':'')+'</h3><p>'+p.d+'</p>'+
-        '<div class="price">'+fmt(yearly?p.y:p.m)+' <small>/ orang / bulan</small></div>'+
-        '<ul>'+p.f.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>'+
-        '<a class="btn'+(p.pop?'':' ghost')+'" href="#daftar">'+p.c+'</a></article>';
-    }).join('');
-  }
-  renderPlans();
-  $('#bill').addEventListener('click',function(){
-    yearly=!yearly;this.setAttribute('aria-checked',yearly);renderPlans();
-  });
-
-  var faqs=[
-    ['Nimbus beneran gratis?','Iya. Paket Gratis bisa dipakai selamanya untuk tim sampai 5 orang. Paket berbayar isinya fitur tambahan.'],
-    ['Bisa ganti paket nggak?','Bisa, kapan saja. Mau naik atau turun paket, tagihannya otomatis menyesuaikan.'],
-    ['Data saya aman?','Aman. Data dienkripsi waktu disimpan dan dikirim, dan admin tim yang mengatur siapa boleh buka tiap proyek.'],
-    ['Ada aplikasi HP-nya?','Belum ada, tapi Nimbus nyaman dibuka dari browser HP.']
-  ];
-  $('#faq-list').innerHTML=faqs.map(function(f,i){
-    return '<div><h3><button class="q" type="button" aria-expanded="false" aria-controls="a'+i+'" id="q'+i+'">'+f[0]+'</button></h3>'+
-      '<div class="a" id="a'+i+'" role="region" aria-labelledby="q'+i+'" hidden>'+f[1]+'</div></div>';
-  }).join('');
-  $('#faq-list').addEventListener('click',function(e){
-    var b=e.target.closest('.q');if(!b)return;
-    var open=b.getAttribute('aria-expanded')==='true';
-    b.setAttribute('aria-expanded',!open);
-    document.getElementById(b.getAttribute('aria-controls')).hidden=open;
-  });
-
-  var mb=$('#menu-btn'),nav=$('#site-nav');
-  function setMenu(o){nav.classList.toggle('open',o);mb.setAttribute('aria-expanded',o);mb.setAttribute('aria-label',o?'Tutup menu':'Buka menu')}
-  mb.addEventListener('click',function(){setMenu(mb.getAttribute('aria-expanded')!=='true')});
-  nav.addEventListener('click',function(e){if(e.target.closest('a'))setMenu(false)});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&mb.getAttribute('aria-expanded')==='true'){setMenu(false);mb.focus()}});
-
-  var tb=$('#theme-btn'),mq=window.matchMedia('(prefers-color-scheme: dark)');
-  function applyTheme(t){
-    root.setAttribute('data-theme',t);
-    tb.setAttribute('aria-pressed',t==='dark');
-    tb.setAttribute('aria-label',t==='dark'?'Ganti ke tema terang':'Ganti ke tema gelap');
-  }
-  var saved=null;try{saved=localStorage.getItem('nimbus-theme')}catch(e){}
-  applyTheme(saved||(mq.matches?'dark':'light'));
-  tb.addEventListener('click',function(){
-    var t=root.getAttribute('data-theme')==='dark'?'light':'dark';
-    applyTheme(t);try{localStorage.setItem('nimbus-theme',t)}catch(e){}
-  });
-  mq.addEventListener&&mq.addEventListener('change',function(e){
-    var s=null;try{s=localStorage.getItem('nimbus-theme')}catch(x){}
-    if(!s)applyTheme(e.matches?'dark':'light');
-  });
-
-  var form=$('#form'),email=$('#email'),msg=$('#email-msg');
-  function show(t,c){msg.textContent=t;msg.className='msg '+c}
-  email.addEventListener('input',function(){email.removeAttribute('aria-invalid');if(msg.classList.contains('err'))show('','')});
-  form.addEventListener('submit',function(e){
-    e.preventDefault();
-    var v=email.value.trim();
-    if(!v){email.setAttribute('aria-invalid','true');show('Emailnya belum diisi. Isi dulu ya.','err');email.focus();return}
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){email.setAttribute('aria-invalid','true');show('Email ini sepertinya belum benar. Contoh yang benar: nama@perusahaan.id','err');email.focus();return}
-    email.removeAttribute('aria-invalid');
-    show('Terima kasih! '+v+' sudah kami catat. Nanti kami kabari lewat email itu.','ok');
-    form.reset();
-  });
-  $('#year').textContent=new Date().getFullYear();
-})();
-</script>
-</body>
+    </footer>
+  </body>
 </html>
